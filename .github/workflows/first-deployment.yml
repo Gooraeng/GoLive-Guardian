@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Deploy to Server
         uses: wlixcc/SFTP-Deploy-Action@v1.2.5
@@ -46,12 +46,18 @@ jobs:
     needs: [deploy-via-sftp]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Remove Existing Folder
         uses: fifsky/ssh-action@master
         with:
           command: |
             cd ${{ env.REPO_NAME }}
-            apt install python3.12-venv
             python3 -m venv ${{env.VENV}}
             source ${{env.VENV}}/bin/activate
             pip install --upgrade pip
