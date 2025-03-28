@@ -22,7 +22,21 @@ jobs:
           user: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           args: "-tt"
-  
+
+  setup-python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install venv
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            sudo apt-get update && sudo apt-get install -y python${{env.PYTHON}}-venv
+            sudo apt-get install -y python3-pip
+          host: ${{ secrets.VPS_IP }}
+          user: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          args: "-tt"
+
   deploy-via-sftp:
     needs: [clean-up-folder]
     runs-on: ubuntu-latest
@@ -47,17 +61,7 @@ jobs:
     needs: [deploy-via-sftp]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{env.PYTHON}}
-
-      - name: Install Venv
-        run: sudo apt-get update && sudo apt-get install -y python${{env.PYTHON}}-venv
-
-      - name: Remove Existing Folder
+      - name: Install Requirements
         uses: fifsky/ssh-action@master
         with:
           command: |
