@@ -7,6 +7,7 @@ on:
 env:
   REPO_NAME: ${{ github.event.repository.name }}
   VENV: "venv"
+  PYTHON: "3.12"
 
 jobs:
   clean-up-folder:
@@ -51,7 +52,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{env.PYTHON}}
+
+      - name: Install Venv
+        run: sudo apt-get update && sudo apt-get install -y python${{env.PYTHON}}-venv
 
       - name: Remove Existing Folder
         uses: fifsky/ssh-action@master
