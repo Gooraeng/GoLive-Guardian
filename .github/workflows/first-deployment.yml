@@ -51,6 +51,7 @@ jobs:
         with:
           command: |
             cd ${{ env.REPO_NAME }}
+            apt install python3.12-venv
             python3 -m venv ${{env.VENV}}
             source ${{env.VENV}}/bin/activate
             pip install --upgrade pip
